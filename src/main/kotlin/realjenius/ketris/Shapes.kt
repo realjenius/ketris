@@ -1,10 +1,6 @@
 package realjenius.ketris
 
-import java.util.concurrent.ThreadLocalRandom
-
-enum class Rotation {
-  None, Clockwise, Counterclockwise
-}
+enum class Rotation { None, Clockwise, Counterclockwise }
 
 /** The set of shape templates */
 enum class TetrominoShape(val originX: Int, val originY: Int, val shape: Shape) {
@@ -92,15 +88,11 @@ data class Tetromino(val template: TetrominoShape, val shape: Shape, val x: Int,
   val maxY = shape.maxY + y
   val minY = shape.minY + y
 
-  fun rotate(rotation: Rotation) : Tetromino {
-    if (rotation == Rotation.None || template == TetrominoShape.O) return this
-    return this.copy(shape = shape.rotate(rotation))
-  }
+  fun rotate(rotation: Rotation) =
+    if (rotation == Rotation.None || template == TetrominoShape.O) this
+    else this.copy(shape = shape.rotate(rotation))
 
-  fun move(x: Int, y: Int) : Tetromino {
-    if (x == 0 && y == 0) return this
-    return this.copy(x = this.x + x, y = this.y + y)
-  }
+  fun move(x: Int, y: Int) = if (x == 0 && y == 0) this else this.copy(x = this.x + x, y = this.y + y)
 
   fun contains(x: Int, y: Int) = shape.coordinates.any { (it.first + this.x) == x && (it.second + this.y) == y }
 

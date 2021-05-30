@@ -22,7 +22,6 @@ class Board(private val game: Game) {
   private fun spawnPiece() {
     activePiece = Tetromino(holdPiece)
     holdPiece = game.piece()
-    println("New Piece: ${activePiece.template}, NextPiece: $holdPiece")
     computeGhost()
     game.clock.newPiece()
   }
