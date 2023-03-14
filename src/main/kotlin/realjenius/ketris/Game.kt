@@ -1,7 +1,6 @@
 package realjenius.ketris
 
 class Game(val clock: Clock) {
-
   var level: Int = 1
   var score: Long = 0
   var lines: Int = 0
@@ -10,6 +9,9 @@ class Game(val clock: Clock) {
   private val pieceBag = generateSequence { TetrominoShape.all.shuffled() }.flatten().iterator()
 
   fun start() {
+    level = 1
+    score = 0
+    lines = 0
     state = State.Running
     clock.adjustGravity(1)
     board = Board(this)
@@ -49,16 +51,13 @@ class Game(val clock: Clock) {
 
   fun addLines(lineAdd: Int) {
     if (lineAdd == 0) return
+    val oldLines = lines
     lines += lineAdd
-    score += when (lineAdd) {
-      1 -> 100
-      2 -> 300
-      3 -> 500
-      else -> 800
-    } * level
+    score += (SCORES_BY_LINE_ADD[lineAdd.coerceAtMost(4) - 1] * level)
 
-    if (lines % 10 == 0) {
-      level++
+    val newLevel = (lines / LINES_PER_LEVEL) + 1
+    if (level != newLevel) {
+      level = newLevel
       clock.adjustGravity(level)
     }
   }
@@ -68,5 +67,10 @@ class Game(val clock: Clock) {
     Running(Game::pause),
     Paused(Game::resume),
     GameOver(Game::restart)
+  }
+
+  companion object {
+    private val SCORES_BY_LINE_ADD = listOf(100, 300, 500, 800)
+    private const val LINES_PER_LEVEL = 10
   }
 }

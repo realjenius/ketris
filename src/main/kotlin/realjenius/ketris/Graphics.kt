@@ -4,33 +4,40 @@ import com.googlecode.lanterna.TerminalPosition
 import com.googlecode.lanterna.TerminalSize
 import com.googlecode.lanterna.TextColor
 import com.googlecode.lanterna.graphics.TextGraphics
+import com.googlecode.lanterna.screen.Screen
 import com.googlecode.lanterna.screen.TerminalScreen
 
+/**
+ * A Lanterna-based renderer for the game state
+ */
 class Graphics (private val screen: TerminalScreen, private val game: Game) {
   private val graphics: TextGraphics = screen.newTextGraphics()
+  private var size: TerminalSize = screen.terminalSize
   fun repaint() {
     screen.apply {
+      doResizeIfNecessary()?.let { size = it }
       clear()
       graphics.apply {
         if (game.isPausedOrRunning()) drawBoard() else drawStartText()
         drawBorder()
         drawDivider()
-        drawStats()
         drawHoldBox()
+        drawStats()
       }
-      refresh()
+      // Delta never seems to be even remotely a performance problem, and avoids most screen-tearing issues.
+      refresh(Screen.RefreshType.DELTA)
     }
   }
 
   private fun TextGraphics.drawBorder() {
     foregroundColor = BORDER_COLOR
     (0 until BORDER_HEIGHT).forEach {
-      setCharacter(0, it, BORDER_CHAR)
-      setCharacter(BORDER_WIDTH - 1, it, BORDER_CHAR)
+      setCharacter(BORDER_START, it, BORDER_CHAR)
+      setCharacter(BORDER_START + BORDER_WIDTH - 1, it, BORDER_CHAR)
     }
     (0 until BORDER_WIDTH).forEach {
-      setCharacter(it, 0, BORDER_CHAR)
-      setCharacter(it, BORDER_HEIGHT - 1, BORDER_CHAR)
+      setCharacter(BORDER_START + it, 0, BORDER_CHAR)
+      setCharacter(BORDER_START + it, BORDER_HEIGHT - 1, BORDER_CHAR)
     }
   }
 
@@ -38,7 +45,7 @@ class Graphics (private val screen: TerminalScreen, private val game: Game) {
     game.board.allCells {
       if (it.y >= Board.INVISIBLE_ROWS) {
         val x = it.x + BOARD_START
-        val y = it.y + BOARD_START - Board.INVISIBLE_ROWS
+        val y = it.y + 1 - Board.INVISIBLE_ROWS
         val shape = it.shape()
         val (color: TextColor, char: Char) = when {
           shape != null && it.isTarget() -> GHOST_COLOR to GHOST_CHAR
@@ -55,12 +62,12 @@ class Graphics (private val screen: TerminalScreen, private val game: Game) {
   private fun TextGraphics.drawStartText() {
     if (game.isNotStarted()) {
       foregroundColor = PLAY_COLOR
-      putString(BOARD_START + 3, BOARD_START + 9, "PLAY")
-      putString(BOARD_START + 2, BOARD_START + 10, "KETRIS")
+      putString(BOARD_START + 3, 9, "PLAY")
+      putString(BOARD_START + 2, 10, "KETRIS")
     } else {
       foregroundColor = GAMEOVER_COLOR
-      putString(BOARD_START + 3, BOARD_START + 9, "GAME")
-      putString(BOARD_START + 3, BOARD_START + 10, "OVER")
+      putString(BOARD_START + 3, 9, "GAME")
+      putString(BOARD_START + 3, 10, "OVER")
     }
   }
 
@@ -73,23 +80,23 @@ class Graphics (private val screen: TerminalScreen, private val game: Game) {
 
   private fun TextGraphics.drawStats() {
     foregroundColor = STATS_COLOR
-    putString(16, 3, "Level: ${game.level}")
-    putString(16, 4, "Lines: ${game.lines}")
-    putString(16, 5, "Score: ${game.score}")
+    putString(INFO_START, 3, "Level: ${game.level}")
+    putString(INFO_START, 4, "Lines: ${game.lines}")
+    putString(INFO_START, 5, "Score: ${game.score}")
     if (!game.isRunning()) {
       foregroundColor = PRESS_SPACE_COLOR
-      putString(16, 6, "Space to Play")
+      putString(INFO_START, 6, "Space to Play")
     }
   }
 
   private fun TextGraphics.drawHoldBox() {
     foregroundColor = BORDER_COLOR
-    drawRectangle(TerminalPosition(18, 8), TerminalSize(7, 7), '*')
+    drawRectangle(TerminalPosition(NEXT_START, 8), TerminalSize(7, 7), '*')
     if (game.isPausedOrRunning()) {
       game.board.next.shape.apply {
         // TODO - something wrong with this mess.
-        val startX = 21 - (width / 2)
-        val startY = 11 - (height / 2)
+        val startX = NEXT_START + 3
+        val startY = 11
         coordinates.forEach {
           foregroundColor = PIECE_COLORS[game.board.next]!!
           setCharacter(startX + it.first, startY + it.second, PIECE_CHAR)
@@ -108,14 +115,17 @@ class Graphics (private val screen: TerminalScreen, private val game: Game) {
     private const val VISIBLE_HEIGHT = Board.HEIGHT - Board.INVISIBLE_ROWS
     private const val BORDER_HEIGHT = VISIBLE_HEIGHT + 2
     private const val BORDER_WIDTH = Board.WIDTH + 2
-    private const val DIVIDER = BORDER_WIDTH
-    private const val BOARD_START = 1
+    private const val BORDER_START = 20
+    private const val BOARD_START = BORDER_START + 1
+    private const val DIVIDER = BORDER_START + BORDER_WIDTH
+    private const val INFO_START = DIVIDER + 2
+    private const val NEXT_START = DIVIDER + 4
 
     private val BORDER_COLOR = TextColor.RGB(49, 51, 53)
     private val STATS_COLOR = TextColor.ANSI.WHITE
     private val DIVIDER_COLOR = TextColor.ANSI.WHITE
     private val BLANK_CELL_COLOR = TextColor.ANSI.BLACK
-    private val GHOST_COLOR = BORDER_COLOR
+    private val GHOST_COLOR = TextColor.RGB(69, 71, 73)
     private val PLAY_COLOR = TextColor.ANSI.GREEN
     private val GAMEOVER_COLOR = TextColor.ANSI.RED
     private val PRESS_SPACE_COLOR = TextColor.ANSI.YELLOW

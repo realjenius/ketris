@@ -3,6 +3,7 @@ package realjenius.ketris
 import com.googlecode.lanterna.input.KeyType
 import com.googlecode.lanterna.screen.TerminalScreen
 
+/** Represents the changes to trigger in the game based on the last read input from the player */
 data class InputState(
   val rotate: Rotation = Rotation.None,
   val xDelta: Int = 0,

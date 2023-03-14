@@ -1,5 +1,8 @@
 package realjenius.ketris
 
+/**
+ * The board state for Ketris
+ */
 class Board(private val game: Game) {
   private var holdPiece: TetrominoShape = game.piece()
   private lateinit var activePiece: Tetromino

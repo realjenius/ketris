@@ -3,6 +3,9 @@ package realjenius.ketris
 import java.time.Duration
 
 
+/**
+ * The core clock logic for a gravity-based tetris-like game.
+ */
 class Clock {
 
   private var framesPieceActive: Int = 0
