@@ -4,42 +4,84 @@ enum class Rotation { None, Clockwise, Counterclockwise }
 
 /** The set of shape templates */
 enum class TetrominoShape(val originX: Int, val originY: Int, val shape: Shape) {
-  I(5, 2, Shape("""
+  I(
+    5,
+    2,
+    Shape(
+      """
     .#.
     .#.
     .#.
     .#.
-    """)),
-  S(4, 3, Shape("""
+    """
+    )
+  ),
+  S(
+    4,
+    3,
+    Shape(
+      """
     .#.
     .##
     ..#
-    """)),
-  Z(4, 3, Shape("""
+    """
+    )
+  ),
+  Z(
+    4,
+    3,
+    Shape(
+      """
     .#.
     ##.
     #..
-  """)),
-  O(5, 3, Shape("""
+    """
+    )
+  ),
+  O(
+    5,
+    3,
+    Shape(
+      """
     ...
     .##
     .##
-  """)),
-  T(4, 3, Shape("""
+  """
+    )
+  ),
+  T(
+    4,
+    3,
+    Shape(
+      """
     ...
     ###
     .#.
-  """)),
-  L(4, 3, Shape("""
+  """
+    )
+  ),
+  L(
+    4,
+    3,
+    Shape(
+      """
     ##.
     .#.
     .#.
-  """)),
-  J(4, 3, Shape("""
-    .##
-    .#.
-    .#.
-  """));
+  """
+    )
+  ),
+  J(
+    4,
+    3,
+    Shape(
+      """
+      .##
+      .#.
+      .#.
+    """
+    )
+  );
 
   companion object {
     val all = values().toList()
@@ -47,7 +89,7 @@ enum class TetrominoShape(val originX: Int, val originY: Int, val shape: Shape) 
 }
 
 /** An immutable rotatable coordinate set */
-data class Shape(val coordinates: List<Pair<Int,Int>>) {
+data class Shape(val coordinates: List<Pair<Int, Int>>) {
   constructor(shapeSpec: String) : this(parse(shapeSpec))
 
   val minX = coordinates.minOf { it.first }
@@ -57,19 +99,18 @@ data class Shape(val coordinates: List<Pair<Int,Int>>) {
 
   fun rotate(rotation: Rotation) = Shape(
     coordinates.map {
-      if (rotation == Rotation.Counterclockwise) it.copy(first = it.second, -it.first)
-      else it.copy(first = -it.second, second = it.first)
+      if (rotation == Rotation.Counterclockwise) it.copy(first = it.second, -it.first) else it.copy(first = -it.second, second = it.first)
     }
   )
 
   companion object {
-    private fun parse(spec: String) : List<Pair<Int,Int>> {
+    private fun parse(spec: String): List<Pair<Int, Int>> {
       return spec
         .lines()
         .filter { it.isNotBlank() }
         .mapIndexed { yIdx, line ->
           line.trim().mapIndexed { xIdx, char ->
-            if (char == '#') xIdx-1 to yIdx-1 else null
+            if (char == '#') xIdx - 1 to yIdx - 1 else null
           }
         }.flatten()
         .filterNotNull()
@@ -87,8 +128,11 @@ data class Tetromino(val template: TetrominoShape, val shape: Shape, val x: Int,
   val minY = shape.minY + y
 
   fun rotate(rotation: Rotation) =
-    if (rotation == Rotation.None || template == TetrominoShape.O) this
-    else this.copy(shape = shape.rotate(rotation))
+    if (rotation == Rotation.None || template == TetrominoShape.O) {
+      this
+    } else {
+      this.copy(shape = shape.rotate(rotation))
+    }
 
   fun move(x: Int, y: Int) = if (x == 0 && y == 0) this else this.copy(x = this.x + x, y = this.y + y)
 

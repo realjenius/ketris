@@ -2,7 +2,6 @@ package realjenius.ketris
 
 import java.time.Duration
 
-
 /**
  * The core clock logic for a gravity-based tetris-like game.
  */
@@ -28,10 +27,10 @@ class Clock {
   }
 
   fun adjustGravity(gravity: Int) {
-    this.gravity = (gravity-1).coerceAtMost(CELLS_PER_FRAME_PER_LEVEL.size-1)
+    this.gravity = (gravity - 1).coerceAtMost(CELLS_PER_FRAME_PER_LEVEL.size - 1)
   }
 
-  fun checkForGravity(frames: Int = 1) : Int {
+  fun checkForGravity(frames: Int = 1): Int {
     framesPieceActive += frames
     var drop = 0
     while (framesPieceActive > timeSimulated) {

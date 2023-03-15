@@ -39,7 +39,7 @@ class Board(private val game: Game) {
 
   fun cellAt(x: Int, y: Int) = grid[y][x]
 
-  fun move(input: InputState) : Boolean {
+  fun move(input: InputState): Boolean {
     var gravityDropCount = game.clock.checkForGravity()
 
     val priorPiece = activePiece
@@ -91,23 +91,24 @@ class Board(private val game: Game) {
   private fun clearLine(line: Int) {
     for (c in 0 until WIDTH) {
       for (r in line downTo 1) {
-        grid[r][c].placed = grid[r-1][c].placed
+        grid[r][c].placed = grid[r - 1][c].placed
       }
     }
   }
 
-  private fun collides(piece: Tetromino) =
-    if (piece.minX < 0 || piece.maxX >= WIDTH) true
-    else if (piece.maxY >= HEIGHT) true
-    else grid.any { it.any { cell -> cell.placed != null && piece.contains(cell.x, cell.y) } }
+  private fun collides(piece: Tetromino) = when {
+    piece.minX < 0 || piece.maxX >= WIDTH -> true
+    piece.maxY >= HEIGHT -> true
+    else -> grid.any { it.any { cell -> cell.placed != null && piece.contains(cell.x, cell.y) } }
+  }
 
   // This is a super wasteful algorithm, but it works and is easy to reason about, so meh for now.
   private fun computeGhost() {
     ghostPiece = activePiece.copy(shape = activePiece.shape.copy())
-    while (!collides(ghostPiece) && ghostPiece.minX < HEIGHT-1) {
+    while (!collides(ghostPiece) && ghostPiece.minX < HEIGHT - 1) {
       ghostPiece = ghostPiece.move(0, 1)
     }
-    if (ghostPiece.minX < HEIGHT-1) ghostPiece = ghostPiece.move(0, -1)
+    if (ghostPiece.minX < HEIGHT - 1) ghostPiece = ghostPiece.move(0, -1)
   }
 
   private fun calculatePieceOverlays() {

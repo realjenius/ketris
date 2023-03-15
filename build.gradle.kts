@@ -2,6 +2,7 @@ plugins {
   java
   kotlin("jvm") version "1.8.10"
   id("com.github.johnrengelman.shadow") version "8.1.0"
+  id("org.jmailen.kotlinter") version "3.12.0"
 }
 
 group = "realjenius.ketris"

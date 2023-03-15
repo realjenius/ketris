@@ -41,8 +41,9 @@ class Game(val clock: Clock) {
   }
 
   fun handle(input: InputState) {
-    if (input.togglePause) state.pauseAction(this)
-    else if (isRunning()) {
+    if (input.togglePause) {
+      state.pauseAction(this)
+    } else if (isRunning()) {
       if (!board.move(input)) gameOver()
     }
   }

@@ -9,7 +9,7 @@ import com.googlecode.lanterna.screen.Screen
 /**
  * A Lanterna-based renderer for the game state
  */
-class Graphics (private val screen: Screen, private val game: Game) {
+class Graphics(private val screen: Screen, private val game: Game) {
   private val graphics: TextGraphics = screen.newTextGraphics()
   private var size: TerminalSize = screen.terminalSize
   fun repaint() {

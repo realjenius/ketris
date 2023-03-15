@@ -2,7 +2,6 @@ package realjenius.ketris
 
 import com.googlecode.lanterna.screen.TerminalScreen
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory
-import com.googlecode.lanterna.terminal.ansi.UnixTerminal
 
 fun main() {
   TerminalScreen(DefaultTerminalFactory().setPreferTerminalEmulator(false).createTerminal()).apply {

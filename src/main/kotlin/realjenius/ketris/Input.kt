@@ -2,7 +2,6 @@ package realjenius.ketris
 
 import com.googlecode.lanterna.input.KeyType
 import com.googlecode.lanterna.screen.Screen
-import com.googlecode.lanterna.screen.TerminalScreen
 
 /** Represents the changes to trigger in the game based on the last read input from the player */
 data class InputState(
@@ -19,7 +18,7 @@ data class InputState(
 
 class Input(private val screen: Screen, private val game: Game) {
 
-  fun process() : InputState {
+  fun process(): InputState {
     val key = screen.pollInput()
     return when {
       key == null -> InputState.EMPTY
@@ -33,5 +32,4 @@ class Input(private val screen: Screen, private val game: Game) {
       else -> InputState.EMPTY
     }
   }
-
 }
