@@ -52,10 +52,8 @@ data class Shape(val coordinates: List<Pair<Int,Int>>) {
 
   val minX = coordinates.minOf { it.first }
   val minY = coordinates.minOf { it.second }
-  val maxX= coordinates.maxOf { it.first }
+  val maxX = coordinates.maxOf { it.first }
   val maxY = coordinates.maxOf { it.second }
-  val height = maxY - minY
-  val width = maxX - minX
 
   fun rotate(rotation: Rotation) = Shape(
     coordinates.map {

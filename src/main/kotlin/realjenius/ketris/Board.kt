@@ -40,7 +40,7 @@ class Board(private val game: Game) {
   fun cellAt(x: Int, y: Int) = grid[y][x]
 
   fun move(input: InputState) : Boolean {
-    var gravityDropCount = game.clock.checkForGravity(1)
+    var gravityDropCount = game.clock.checkForGravity()
 
     val priorPiece = activePiece
     activePiece = activePiece.rotate(input.rotate).takeUnless { collides(it) } ?: activePiece
@@ -122,7 +122,7 @@ class Board(private val game: Game) {
       ?: ghostOverlap?.template
       ?: placed
 
-    fun isTarget() = pieceOverlap == null && ghostOverlap != null
+    fun isGhosted() = pieceOverlap == null && ghostOverlap != null
   }
 
   companion object {

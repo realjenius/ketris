@@ -21,7 +21,6 @@ class Input(private val screen: Screen, private val game: Game) {
 
   fun process() : InputState {
     val key = screen.pollInput()
-
     return when {
       key == null -> InputState.EMPTY
       key.keyType == KeyType.Escape || (key.character == ' ' && !game.isRunning()) -> InputState(togglePause = true)
@@ -31,7 +30,6 @@ class Input(private val screen: Screen, private val game: Game) {
       key.keyType == KeyType.ArrowLeft -> InputState(xDelta = -1)
       key.keyType == KeyType.ArrowRight -> InputState(xDelta = 1)
       key.keyType == KeyType.EOF -> InputState(eof = true)
-
       else -> InputState.EMPTY
     }
   }

@@ -31,7 +31,7 @@ class Clock {
     this.gravity = (gravity-1).coerceAtMost(CELLS_PER_FRAME_PER_LEVEL.size-1)
   }
 
-  fun checkForGravity(frames: Int) : Int {
+  fun checkForGravity(frames: Int = 1) : Int {
     framesPieceActive += frames
     var drop = 0
     while (framesPieceActive > timeSimulated) {

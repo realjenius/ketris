@@ -5,7 +5,6 @@ import com.googlecode.lanterna.TerminalSize
 import com.googlecode.lanterna.TextColor
 import com.googlecode.lanterna.graphics.TextGraphics
 import com.googlecode.lanterna.screen.Screen
-import com.googlecode.lanterna.screen.TerminalScreen
 
 /**
  * A Lanterna-based renderer for the game state
@@ -48,7 +47,7 @@ class Graphics (private val screen: Screen, private val game: Game) {
         val y = it.y + 1 - Board.INVISIBLE_ROWS
         val shape = it.shape()
         val (color: TextColor, char: Char) = when {
-          shape != null && it.isTarget() -> GHOST_COLOR to GHOST_CHAR
+          shape != null && it.isGhosted() -> GHOST_COLOR to GHOST_CHAR
           shape != null -> PIECE_COLORS[shape]!! to PIECE_CHAR
           else -> BLANK_CELL_COLOR to BLANK_CELL_CHAR
         }
