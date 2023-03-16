@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
   java
   kotlin("jvm") version "1.8.10"
@@ -14,6 +16,10 @@ repositories {
 
 kotlin {
   jvmToolchain(17)
+}
+
+tasks.withType<KotlinCompile> {
+  kotlinOptions.useK2 = true
 }
 
 tasks.jar {

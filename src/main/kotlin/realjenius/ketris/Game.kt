@@ -52,7 +52,6 @@ class Game(val clock: Clock) {
 
   fun addLines(lineAdd: Int) {
     if (lineAdd == 0) return
-    val oldLines = lines
     lines += lineAdd
     score += (SCORES_BY_LINE_ADD[lineAdd.coerceAtMost(4) - 1] * level)
 
